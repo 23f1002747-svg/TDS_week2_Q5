@@ -1,0 +1,16 @@
+name: CI - email step
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: '23f1002747@ds.study.iitm.ac.in'
+        run: echo "Hello from step named with the required email"
