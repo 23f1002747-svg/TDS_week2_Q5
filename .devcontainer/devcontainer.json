@@ -2,7 +2,7 @@
   "name": "ga2-5f6ee5",
   "image": "ghcr.io/devcontainers/features/python:1",
   "features": {},
-  "postCreateCommand": "python -m pip install --upgrade pip && pip install fastapi",
+  "postCreateCommand": "uv pip install fastapi",
   "customizations": {
     "vscode": {
       "extensions": [
