@@ -14,3 +14,13 @@ jobs:
 
       - name: '23f1002747@ds.study.iitm.ac.in'
         run: echo "Hello from step named with the required email"
+
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache
+          key: cache-fa0d770
+
+      - name: prime-cache-fa0d770
+        run: echo "Cache result => ${{ steps.cache.outputs.cache-hit }}"
