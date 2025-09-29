@@ -82,4 +82,4 @@ async def ping(request: TelemetryRequest):
             "avg_uptime": float(np.mean(uptimes)),
             "breaches": sum(1 for l in latencies if l > request.threshold_ms)
         }
-    return response
+    return {"regions": response}
