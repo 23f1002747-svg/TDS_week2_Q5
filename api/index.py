@@ -49,11 +49,13 @@ app = FastAPI()
 # Enable CORS for POST requests from any origin
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],        # allow all origins
-    allow_methods=["*"],        # allow all HTTP methods (important for preflight)
-    allow_headers=["*"],        # allow all headers
-)
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"]    # Expose all the headers to the browser in response
 
+) 
 
 class TelemetryRequest(BaseModel):
     regions: List[str]
