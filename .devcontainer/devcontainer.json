@@ -1,0 +1,14 @@
+{
+  "name": "ga2-5f6ee5",
+  "image": "ghcr.io/devcontainers/features/python:1",
+  "features": {},
+  "postCreateCommand": "python -m pip install --upgrade pip && pip install fastapi",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "astral-sh.uv",
+        "ms-python.python"
+      ]
+    }
+  }
+}
