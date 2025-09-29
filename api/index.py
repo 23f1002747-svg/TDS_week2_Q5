@@ -1,12 +1,12 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from typing import List
 import numpy as np
+from typing import List, Dict
 
 app = FastAPI()
 
-# Enable CORS for all POST requests
+# ✅ Enable CORS for all origins and allow POST and OPTIONS methods
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,8 +15,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load the telemetry data (hardcoded or from JSON file)
-telemetry_data = [
+# ✅ Handle preflight CORS (OPTIONS request)
+@app.options("/")
+async def preflight_handler(request: Request):
+    return JSONResponse(status_code=200, content={})
+
+# ✅ Sample telemetry data (you can move this to a separate file if needed)
+telemetry_data =[
   {
     "region": "apac",
     "service": "payments",
@@ -269,23 +274,25 @@ telemetry_data = [
     "uptime_pct": 99.133,
     "timestamp": 20250312
   }
-] 
+]
 
+# ✅ POST endpoint
 @app.post("/")
 async def check_latency(request: Request):
     body = await request.json()
-    regions = body.get("regions", [])
-    threshold = body.get("threshold_ms", 180)
+    regions: List[str] = body.get("regions", [])
+    threshold: float = body.get("threshold_ms", 180)
 
-    result = {}
+    result: Dict[str, Dict] = {}
 
     for region in regions:
-        filtered = [r for r in telemetry_data if r["region"] == region]
-        if not filtered:
+        records = [r for r in telemetry_data if r["region"] == region]
+        if not records:
             continue
-        latencies = [r["latency_ms"] for r in filtered]
-        uptimes = [r["uptime_pct"] for r in filtered]
-        breaches = len([r for r in filtered if r["latency_ms"] > threshold])
+
+        latencies = [r["latency_ms"] for r in records]
+        uptimes = [r["uptime_pct"] for r in records]
+        breaches = sum(1 for r in records if r["latency_ms"] > threshold)
 
         result[region] = {
             "avg_latency": round(np.mean(latencies), 2),
@@ -294,4 +301,4 @@ async def check_latency(request: Request):
             "breaches": breaches
         }
 
-    return JSONResponse(result)
+    return JSONResponse(content=result)
