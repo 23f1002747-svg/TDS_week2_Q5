@@ -8,29 +8,27 @@ on:
 
 jobs:
   build:
-    name: Build Matrix Job
+    name: Build for Node ${{ matrix.node-version }}
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        # You can modify this to OS, Python, or Node versions — at least 3 variants required
-        node-version: [14, 16, 18]
+        node-version: [14, 16, 18]   # ✅ 3 variants ensure 3 jobs
+        # You can expand to [14, 16, 18, 20] if desired
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Identifier step (required)
+      # Required identifier
       - name: matrix-4e7c3c9
         run: echo "Building for Node version ${{ matrix.node-version }}"
 
-      # Setup Node for the specific matrix version
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
 
-      # Example build step (simulated)
       - name: Generate build artifact
         run: |
           echo "Build output for Node version ${{ matrix.node-version }}" > output-${{ matrix.node-version }}.txt
@@ -38,7 +36,6 @@ jobs:
           echo "System Info:" >> output-${{ matrix.node-version }}.txt
           uname -a >> output-${{ matrix.node-version }}.txt
 
-      # Upload non-empty artifact
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
