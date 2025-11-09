@@ -8,36 +8,40 @@ on:
 
 jobs:
   build:
-    name: Build for Node ${{ matrix.node-version }}
+    # 👇 This ensures the job name visibly changes for each variant
+    name: Build for Node v${{ matrix.node-version }}
     runs-on: ubuntu-latest
 
     strategy:
+      # 👇 This is the key: define a list, not a single value
       matrix:
-        node-version: [14, 16, 18]   # ✅ 3 variants ensure 3 jobs
-        # You can expand to [14, 16, 18, 20] if desired
+        node-version: [14, 16, 18]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Required identifier
+      # ✅ Required identifier step
       - name: matrix-4e7c3c9
         run: echo "Building for Node version ${{ matrix.node-version }}"
 
+      # ✅ Setup Node.js according to matrix variant
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
 
+      # ✅ Generate build artifact with content
       - name: Generate build artifact
         run: |
-          echo "Build output for Node version ${{ matrix.node-version }}" > output-${{ matrix.node-version }}.txt
-          echo "Timestamp: $(date)" >> output-${{ matrix.node-version }}.txt
-          echo "System Info:" >> output-${{ matrix.node-version }}.txt
-          uname -a >> output-${{ matrix.node-version }}.txt
+          echo "Build output for Node version ${{ matrix.node-version }}" > build-${{ matrix.node-version }}.txt
+          echo "Timestamp: $(date)" >> build-${{ matrix.node-version }}.txt
+          echo "System Info:" >> build-${{ matrix.node-version }}.txt
+          uname -a >> build-${{ matrix.node-version }}.txt
 
+      # ✅ Upload artifact with unique name
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-4e7c3c9-node${{ matrix.node-version }}
-          path: output-${{ matrix.node-version }}.txt
+          path: build-${{ matrix.node-version }}.txt
